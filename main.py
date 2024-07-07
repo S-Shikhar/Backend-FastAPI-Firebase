@@ -35,16 +35,35 @@ async def upload_file(file: UploadFile = File(...)):
 #     result = a + b
 #     return {"result": result}
 
+# Endpoint to add two numbers provided by the user only showing the result
+# @app.post("/add")
+# async def add_numbers(a: int, b: int):
+#     try:
+#         sum_result = a + b
+#         # Save the sum to Firebase Realtime Database
+#         ref = db.reference('result')
+#         ref.set(sum_result)
+#         return {"a": a, "b": b,"result": sum_result}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+
+# Endpoint to add two numbers provided by the user and show the inputs and the result
 @app.post("/add")
 async def add_numbers(a: int, b: int):
     try:
         sum_result = a + b
-        # Save the sum to Firebase Realtime Database
+
+        # Save the inputs and the sum to Firebase Realtime Database
+        data = {
+            'a': a,
+            'b': b,
+            'sum': sum_result
+        }
         ref = db.reference('result')
-        ref.set(sum_result)
-        return {"a": a, "b": b,"result": sum_result}
+        ref.set(data)  # Use set to update the same reference with new data
+
+        return {"a": a, "b": b, "sum": sum_result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 # uvicorn main:app --reload
